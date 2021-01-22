@@ -17,6 +17,10 @@ block content
   if user
     //- If not yet a member
     if user.member_status
+      form(action="POST" action='')
+        input(name='new-message')
+        button(type='submit') Post Message
+    else
       div(class='action-div')
         h2 You're signed in but you're not a member yet.
         h2 Are you ready to become a member?
@@ -25,3 +29,4 @@ block content
     div(class='action-div')
       h2 Don't you want to see what everyone else is talking about?
       button Become a Member
+      button Log Me In
