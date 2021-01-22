@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -22,12 +25,35 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+// App Dependencies
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Passport.js
+app.use(session{secret: 'equality', resave: false, saveUninitialized: true});
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function(err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.'});
+      }
+      if (!user.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.'});
+      }
+      return done(null, user);
+    });
+  }
+));
+
+// Routers
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

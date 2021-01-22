@@ -23,3 +23,10 @@ exports.sign_up_post = function(req, res, next) {
     redirect('/');
   });
 }
+
+// POST: Post user info for login
+exports.log_in_post = function(req, res, next) {
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/login',
+                                   failureFlash: true });
+}
