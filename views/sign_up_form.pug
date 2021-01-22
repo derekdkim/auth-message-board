@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  form(method='POST' action='')
+    div.username-div
+      label(for='username') Username:
+      input(type='text' name='username' required='true')
+    div.password-div
+      label(for='password') Password:
+      input(type='password' name='password' required='true')
+    div.name-div
+      label(for='first-name') First Name:
+      input(type='text' name='first-name' required='true')
+    button.form-btn(type='submit' Submit)

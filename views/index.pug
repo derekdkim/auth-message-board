@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= title
+  p #{title}
+
+  //- Message Board
+  div(class='message-board')
+    div(class='message')
+      div(class='avatar')
+        img
+      div(class='message-text')
+        p(class='text') Hello World!
+        p(class='author') Test user
+
+  //- Become a Member button
+  if user
+    //- If not yet a member
+    if user.member_status
+      div(class='action-div')
+        h2 You're signed in but you're not a member yet.
+        h2 Are you ready to become a member?
+        button Heck yeah, I am!
+  else
+    div(class='action-div')
+      h2 Don't you want to see what everyone else is talking about?
+      button Become a Member
