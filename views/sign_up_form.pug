@@ -5,15 +5,10 @@ block content
     form(method='POST' action='')
       div.username-div
         label(for='username') Username:
-        input(type='text' name='username' required='true')
+        input(type='text' name='username' maxlength=16 required='true')
       div.password-div
         label(for='password') Password:
-        input(type='password' name='password' required='true')
+        input(type='password' name='password' maxlength=22 required='true')
         label(for='password') Confirm Password:
-        input(type='password' name='password-confirm' required='true')
-      div.name-div
-        label(for='first-name') First Name:
-        input(type='text' name='first-name' required='true')
-        label(for='last-name') Last Name:
-        input(type='text' name='last-name' required='true')
-      button.form-btn(type='submit' Submit)
+        input(type='password' name='password-confirm' maxlength=22 required='true')
+      button.form-btn(type='submit') Sign Up

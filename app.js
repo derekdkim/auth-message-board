@@ -6,6 +6,7 @@ const logger = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -33,7 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport.js
-app.use(session{secret: 'equality', resave: false, saveUninitialized: true});
+app.use(session({secret: 'equality', resave: false, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
@@ -45,13 +46,29 @@ passport.use(new LocalStrategy(
       if (!user) {
         return done(null, false, { message: 'Incorrect username.'});
       }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.'});
-      }
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          // Successful login
+          return done(null, user);
+        } else {
+          // Passwords do not match
+          return done(null, false, {msg: 'Incorrect Password'});
+        }
+      });
       return done(null, user);
     });
   }
 ));
+
+passport.serializeUser(function(user,done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 // Routers
 app.use('/', indexRouter);
