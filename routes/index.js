@@ -5,9 +5,7 @@ const userController = require('../controller/userController');
 const indexController = require('../controller/indexController');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Members Only Message Board' });
-});
+router.get('/', indexController.display_messages);
 
 /* POST New Message */
 router.post('/', indexController.post_message);
@@ -23,5 +21,8 @@ router.get('/log-in', userController.log_in_get);
 
 /* POST Login form */
 router.post('/log-in', userController.log_in_post);
+
+/* GET Log out */
+router.get('/log-out', userController.log_out);
 
 module.exports = router;

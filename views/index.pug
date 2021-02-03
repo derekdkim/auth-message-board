@@ -2,7 +2,8 @@ extends layout
 
 block content
   h1= title
-  p #{title}
+  if user
+    p Hello #{user.username}
 
   //- Message Board
   div(class='message-board')
@@ -15,6 +16,7 @@ block content
 
   //- Become a Member button
   if user
+    a(href='/log-out') Log Out
     //- If not yet a member
     if user.member_status
       form(method="POST" action='')

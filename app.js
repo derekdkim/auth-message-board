@@ -14,6 +14,10 @@ const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+const User = require('./models/user');
+
+const serialize = require('./passport/serialize');
+
 const app = express();
 
 // view engine setup
@@ -30,17 +34,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 // Passport.js
-app.use(session({secret: 'equality', resave: false, saveUninitialized: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.urlencoded({ extended: false }));
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
+passport.use(
+  new LocalStrategy(function(username, password, done) {
     User.findOne({ username: username }, function(err, user) {
       if (err) { return done(err); }
       if (!user) {
@@ -55,20 +55,24 @@ passport.use(new LocalStrategy(
           return done(null, false, {msg: 'Incorrect Password'});
         }
       });
-      return done(null, user);
     });
   }
 ));
 
-passport.serializeUser(function(user,done) {
-  done(null, user.id);
-});
+passport.serializeUser(serialize.serialize);
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
+passport.deserializeUser(serialize.deserialize);
+
+// app.use(function(req, res, next) {
+//   res.locals.currentUser = req.user;
+//   next();
+// });
+
+app.use(session({secret: 'equality', resave: false, saveUninitialized: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+
 
 // Routers
 app.use('/', indexRouter);
