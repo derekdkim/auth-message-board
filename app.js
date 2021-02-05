@@ -16,6 +16,7 @@ const usersRouter = require('./routes/users');
 
 const User = require('./models/user');
 
+const authConfig = require('./passport/local-strategy');
 const serialize = require('./passport/serialize');
 
 const app = express();
@@ -26,7 +27,7 @@ app.set('view engine', 'pug');
 
 // Set up mongoDB
 const mongoDB = process.env.MONGODB_KEY;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -39,34 +40,30 @@ app.use(cookieParser());
 
 // Passport.js
 
-passport.use(
-  new LocalStrategy(function(username, password, done) {
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.'});
-      }
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (res) {
-          // Successful login
-          return done(null, user);
-        } else {
-          // Passwords do not match
-          return done(null, false, {msg: 'Incorrect Password'});
-        }
-      });
-    });
-  }
-));
+// passport.use(
+//   new LocalStrategy(function(username, password, done) {
+//     User.findOne({ username: username }, function(err, user) {
+//       if (err) { return done(err); }
+//       if (!user) {
+//         return done(null, false, { message: 'Incorrect username.'});
+//       }
+//       bcrypt.compare(password, user.password, (err, res) => {
+//         if (res) {
+//           // Successful login
+//           return done(null, user);
+//         } else {
+//           // Passwords do not match
+//           return done(null, false, {msg: 'Incorrect Password'});
+//         }
+//       });
+//     });
+//   }
+// ));
 
+passport.use(new LocalStrategy(authConfig.strat));
 passport.serializeUser(serialize.serialize);
 
 passport.deserializeUser(serialize.deserialize);
-
-// app.use(function(req, res, next) {
-//   res.locals.currentUser = req.user;
-//   next();
-// });
 
 app.use(session({secret: 'equality', resave: false, saveUninitialized: true}));
 app.use(passport.initialize());

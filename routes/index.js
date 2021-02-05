@@ -25,4 +25,10 @@ router.post('/log-in', userController.log_in_post);
 /* GET Log out */
 router.get('/log-out', userController.log_out);
 
+/* GET Membership form */
+router.get('/become-a-member', userController.membership_form_get);
+
+/* POST Membership form */
+router.post('/become-a-member', userController.membership_form_post);
+
 module.exports = router;

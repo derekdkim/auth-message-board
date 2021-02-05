@@ -43,6 +43,38 @@ exports.log_in_post = passport.authenticate('local', {
   failureRedirect: "/login"
 });
 
+// GET: Membership form
+exports.membership_form_get = function(req, res, next) {
+  res.render('membership_form', {user: req.user});
+}
+
+// POST: Submit membership test
+exports.membership_form_post = function(req, res, next) {
+  if (req.user && req.user !== undefined) {
+    const TRUE_ANSWER = 4;
+    if (parseInt(req.body.answer, 10) === TRUE_ANSWER) {
+      console.log('Correct answer! Registering as user now.');
+      console.log(req.params.id);
+      console.log(req.user._id);
+
+      User.findByIdAndUpdate(req.user._id, { member_status: true }, { new: true }, function(err, result) {
+        if (err) {
+          return next(err);
+        } else {
+          console.log(result);
+          res.redirect('/');
+        }
+      });
+    } else {
+      // Incorrect answer
+      console.log('Wrong answer');
+      res.redirect('/');
+    }
+  } else {
+    res.redirect('/');
+  }
+}
+
 // GET: Log-out
 exports.log_out = function(req, res, next) {
   req.logout();

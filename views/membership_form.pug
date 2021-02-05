@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+  div.main-container 
+    div
+      h3 #{user.username}, do you have what it takes to become a member? 
+      p Correctly answer just one skill-testing question!
+      form(method='POST' action='/become-a-member')
+        label(for='answer') What is 2 + 2?
+        input(name='answer')
+        button(type='submit') Submit
