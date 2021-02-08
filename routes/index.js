@@ -31,4 +31,7 @@ router.get('/become-a-member', userController.membership_form_get);
 /* POST Membership form */
 router.post('/become-a-member', userController.membership_form_post);
 
+/* POST New Message */
+router.post('/', indexController.post_message);
+
 module.exports = router;

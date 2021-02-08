@@ -3,33 +3,45 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const debug = require('debug');
 
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 // GET: Display sign-up form
 exports.sign_up_get = function(req, res, next) {
-  res.render('sign_up_form', {title: 'Sign Up'});
+  res.render('sign_up_form');
 };
 
 // POST: Post user info for sign up
-exports.sign_up_post = function(req, res, next) {
-  var new_user = new User(
-    {
-      username: req.body.username,
-      password: req.body.password,
-      member_status: false
+exports.sign_up_post = [
+  body('username').trim().isString().isLength({ min: 6 }).escape().withMessage('Username must be at least 6 characters')
+    .isAlphanumeric().withMessage('Username can only consist of alphanumeric characters'),
+  body('password').trim().isString().isLength({ min: 1 }).escape().withMessage('Password must not be empty.'),
+  (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('sign_up_form');
+      return;
+    } else {
+      const new_user = new User(
+        {
+          username: req.body.username,
+          password: req.body.password,
+          member_status: false
+        }
+      );
+      // Hash password before saving
+      bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+        // Replace password with hashed password
+        new_user.set('password', hashedPassword);
+        // Save user info to DB
+        new_user.save(err => {
+          if (err) { return next(err); }
+          res.redirect('/');
+        });
+      });
     }
-  );
-  // Hash password before saving
-  bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-    // Replace password with hashed password
-    new_user.set('password', hashedPassword);
-    // Save user info to DB
-    new_user.save(err => {
-      if (err) { return next(err); }
-      res.redirect('/');
-    });
-  });
-}
+  }
+];
 
 // GET: Display log-in form
 exports.log_in_get = function(req, res, next) {

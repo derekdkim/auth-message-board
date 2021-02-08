@@ -10,12 +10,14 @@ block content
     div.message-container
       div.message-text
         p.text Hello World!
-        p.author Test user
+        if user
+          p.author Test user
     for message in messages 
       div.message-container
         p.text #{message.text}
-        span.author #{message.author}
-        span.timestamp #{message.timestamp}
+        if user
+          span.author #{message.author.username}
+          span.timestamp #{message.fTimestamp}
   //- Become a Member button
   if user
     a(href='/log-out') Log Out
@@ -23,7 +25,7 @@ block content
     //- If not yet a member
     if user.member_status
       form(method="POST" action='/')
-        input(name='new-message')
+        input(name='newmessage')
         button(type='submit') Post Message
     else
       div.action-div
@@ -32,6 +34,6 @@ block content
         a(href='/become-a-member') Heck yeah, I am!
   else
     div.action-div
-      h2 Don't you want to see what everyone else is talking about?
+      h2 Don't you want to see who said these messages and write your own?
       a(href='/sign-up') Become a Member
       a(href='/log-in') Log Me In
