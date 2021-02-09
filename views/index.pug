@@ -1,39 +1,41 @@
 extends layout
 
 block content
-  h1= title
+  h1.d-flex.justify-content-center.mb-5 Members Only Message Board
   if user
-    p Hello #{user.username}
+    p.h5.m-4 Hello #{user.username}
+    a.m-2(href='/log-out' role="button" class='btn btn-primary') Log Out
 
   //- Message Board
-  div.message-board
-    div.message-container
-      div.message-text
-        p.text Hello World!
-        if user
-          p.author Test user
+  div.message-board.list-group.m-2
     for message in messages 
-      div.message-container
-        p.text #{message.text}
+      div.list-group-item.list-group-item-action
+        p.message-text.d-flex.w-100.justify-content-between #{message.text}
         if user
-          span.author #{message.author.username}
+          span.mr-2.font-weight-600 
+            strong #{message.author.username}
           span.timestamp #{message.fTimestamp}
+        else
+          span.mr-2.font-weight-600 
+            strong ?????????
+          span.timestamp ????????
   //- Become a Member button
   if user
-    a(href='/log-out') Log Out
-    p Membership Status: #{user.member_status}
+    p.h5.m-4 
+      strong Membership Status: #{user.member_status}
     //- If not yet a member
     if user.member_status
       form(method="POST" action='/')
-        input(name='newmessage')
-        button(type='submit') Post Message
+        input(name='newmessage' class='form-control m-2')
+        button(type='submit' class='btn btn-primary m-2') Post Message
     else
-      div.action-div
-        h2 You're signed in but you're not a member yet.
-        h2 Are you ready to become a member?
-        a(href='/become-a-member') Heck yeah, I am!
+      div.action-div.d-flex.justify-content-center
+        div
+          h2.mb-4 Want to become a member?
+          a(href='/become-a-member' role="button" class='btn btn-primary d-flex justify-content-center') Heck yeah, I do!
   else
     div.action-div
-      h2 Don't you want to see who said these messages and write your own?
-      a(href='/sign-up') Become a Member
-      a(href='/log-in') Log Me In
+      h2.m-4.d-flex.justify-content-center Don't you want to see who said these messages and write your own?
+      div.d-flex.justify-content-center
+        a(href='/sign-up' role="button" class='btn btn-primary mr-2') Become a Member
+        a(href='/log-in' role="button" class='btn btn-primary') Log Me In

@@ -3,12 +3,13 @@ extends layout
 block content
   div.main-container
     form(method='POST' action='/sign-up')
-      div.username-div
+      div.username-div.form-group
         label(for='username') Username:
-        input(type='text' name='username' maxlength=16 required='true')
-      div.password-div
+        input(type='text' name='username' maxlength=16 required='true' class='form-control')
+      div.password-div.form-group
         label(for='password') Password:
-        input(type='password' name='password' maxlength=22 required='true')
+        input(type='password' name='password' maxlength=22 required='true' class='form-control')
+      div.conf-password-div.form-group
         label(for='password') Confirm Password:
-        input(type='password' name='password-confirm' maxlength=22 required='true')
-      button.form-btn(type='submit') Sign Up
+        input(type='password' name='password-confirm' maxlength=22 required='true' class='form-control')
+      button.form-btn(type='submit' class='btn btn-primary') Sign Up

@@ -3,10 +3,10 @@ extends layout
 block content
   div.main-container
     form(method='POST' action='/log-in')
-      div.username-div
+      div.username-div.form-group
         label(for='username') Username:
-        input(type='text' name='username' required='true')
-      div.password-div
+        input(type='text' name='username' required='true' class='form-control')
+      div.password-div.form-group
         label(for='password') Password:
-        input(type='password' name='password' required='true')
-      button.form-btn(type='submit') Log In
+        input(type='password' name='password' required='true' class='form-control')
+      button.form-btn(type='submit' class='btn btn-primary') Log In
